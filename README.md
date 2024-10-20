@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Gemini AI Chatbot with Next.js
 
-First, run the development server:
+A simple chatbot built using **Next.js** and **TypeScript**, powered by **Google's Gemini API**. This chatbot allows users to ask questions and receive AI-generated responses, with features like Markdown rendering, syntax highlighting, chat history persistence, and a dark/light theme switch.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **AI-Powered Answers**: Utilizes the Gemini API for generating conversational responses.
+- **Markdown Support**: Renders responses with rich Markdown, including headings, lists, and code blocks.
+- **Syntax Highlighting**: Code blocks in responses are highlighted using `rehype-highlight`.
+- **Persistent Chat History**: Previous questions and answers are stored locally in `localStorage`.
+- **Dark/Light Theme**: User can toggle between dark and light themes for better accessibility.
+- **Responsive Design**: Built with **Tailwind CSS** for a clean and responsive UI on both desktop and mobile.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Clone this repository:
 
-## Learn More
+   ```bash
+   git clone https://github.com/your-username/gemini-ai-chatbot.git
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Navigate to the project folder:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   cd gemini-chatbot
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Install the required dependencies:
 
-## Deploy on Vercel
+   ```bash
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Set up your **Gemini API** key:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   - Get your API key from [Google AI Studio](https://studio.ai.google.com/).
+   - Create a `.env.local` file in the root directory and add your API key:
+
+     ```env
+     API_KEY=your-api-key
+     ```
+
+5. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+6. Open [http://localhost:3000](http://localhost:3000) in your browser to see the chatbot.
+
+## Usage
+
+- Type a question in the input box and press "Ask".
+- The AI will respond to your question, and the answer will be displayed in a Markdown format.
+- Code snippets in the response will be syntax-highlighted.
+- Previous questions and answers are stored in local storage and will persist even after refreshing the page.
+- Use the button at the top-right to toggle between dark and light themes.
+
+## Technologies Used
+
+- **Next.js** (with App Router)
+- **TypeScript**
+- **Tailwind CSS** for styling
+- **Google Gemini API** for AI responses
+- **ReactMarkdown** and **rehype-highlight** for Markdown rendering and syntax highlighting
+- **localStorage** for chat history persistence
+
+
