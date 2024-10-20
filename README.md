@@ -17,7 +17,7 @@ A simple chatbot built using **Next.js** and **TypeScript**, powered by **Google
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/your-username/gemini-ai-chatbot.git
+   git clone https://github.com/ReyKan-KP/gemini-chatbot.git
    ```
 
 2. Navigate to the project folder:
