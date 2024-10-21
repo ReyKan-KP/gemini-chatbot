@@ -66,65 +66,74 @@ export default function ChatInterface() {
     localStorage.setItem("theme", newTheme);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!question.trim() && !file) return;
-    setLoading(true);
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  if (!question.trim() && !file) return;
+  setLoading(true);
 
-    try {
-      const formData = new FormData();
-      formData.append("question", question);
-      if (file) {
-        formData.append("file", file);
-      }
-
-      const tempEntry: ChatEntry = {
-        question: question || `[File: ${file?.name}]`,
-        answer:
-          "Loading... Please wait for a few minutes while we process your request.",
-      };
-      setChatHistory([...chatHistory, tempEntry]);
-
-      const res = await fetch("/api/chatbot", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const errorMsg = await res.text();
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const data = await res.json();
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      const newEntry: ChatEntry = {
-        question: question || `[File: ${file?.name}]`,
-        answer: data.answer,
-      };
-      const updatedChatHistory = [...chatHistory.slice(0, -1), newEntry];
-
-      setChatHistory(updatedChatHistory);
-      localStorage.setItem("chatHistory", JSON.stringify(updatedChatHistory));
-      setQuestion("");
-      setFile(null);
-    } catch (error) {
-      console.error("Error:", error);
-      toast({
-        title: "Error",
-        description:
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred",
-        variant: "destructive",
-      });
-      setChatHistory(chatHistory.slice(0, -1));
-    } finally {
-      setLoading(false);
+  try {
+    const formData = new FormData();
+    formData.append("question", question);
+    if (file) {
+      formData.append("file", file);
     }
-  };
+
+    // Temporary entry while loading
+    const tempEntry: ChatEntry = {
+      question: question || `[File: ${file?.name}]`,
+      answer:
+        "Loading... Please wait for a few minutes while we process your request.",
+    };
+
+    // Add temp entry to chat history without slicing
+    const newChatHistory = [...chatHistory, tempEntry];
+    setChatHistory(newChatHistory);
+
+    const res = await fetch("/api/chatbot", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const errorMsg = await res.text();
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    const newEntry: ChatEntry = {
+      question: question || `[File: ${file?.name}]`,
+      answer: data.answer,
+    };
+
+    // Update the chat history by replacing the temp entry with the real response
+    const updatedChatHistory = newChatHistory.map((entry, index) =>
+      index === newChatHistory.length - 1 ? newEntry : entry
+    );
+
+    setChatHistory(updatedChatHistory);
+    localStorage.setItem("chatHistory", JSON.stringify(updatedChatHistory));
+    setQuestion("");
+    setFile(null);
+  } catch (error) {
+    console.error("Error:", error);
+    toast({
+      title: "Error",
+      description:
+        error instanceof Error ? error.message : "An unexpected error occurred",
+      variant: "destructive",
+    });
+
+    // Remove the temp entry on error
+    setChatHistory(chatHistory);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = e.target.files?.[0];
@@ -146,7 +155,13 @@ export default function ChatInterface() {
   };
 
   // Function to delete a chat entry
+  // Function to delete a chat entry with a confirmation prompt
   const deleteChatEntry = (index: number) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this chat entry?"
+    );
+    if (!confirmed) return;
+
     const updatedChatHistory = chatHistory.filter((_, i) => i !== index);
     setChatHistory(updatedChatHistory);
     localStorage.setItem("chatHistory", JSON.stringify(updatedChatHistory));
